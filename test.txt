@@ -1,0 +1,17 @@
+define
+this is a test file for 13.stdio.c
+endTesting
+a
+program...
+end
+
+
+this is test1.
+I want to be appended at another file.
+this is test2.
+
+
+this is test1.
+I want to be appended at another file.
+this is test2.
+
