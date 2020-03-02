@@ -5,14 +5,36 @@ Create time : 2020.2.29
 Author : Lsx
 *************************************************************************/
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #define MAXTITLE 40
 #define MAXAUTLEN 40
 #define MAXBOOK 15
 #define MAXBOOKCOUNT 100
 #define LEN 20
 #define NLEN 40
+typedef struct
+{
+    double x;
+    double y;
+} TEST;
+typedef struct Complex
+{
+    float real;
+    float imag;
+} COMPLEX;
+const char *colors[] = {"red", "orange", "yellow", "green", "blue", "violet"};
+enum EColor
+{
+    red,
+    orange,
+    yellow,
+    green,
+    blue,
+    violet
+};
 
 // =======================================================================
 char *s_gets(char *sStr, int iSize);
@@ -303,13 +325,210 @@ void code148(void)
     }
 }
 
+void code1411(void)
+{
+    // 枚举类enum例子
+    char cpChoice[LEN];
+    enum EColor color;
+    bool color_is_found = false;
+    printf("Enter a color(empty to quit):");
+    while (s_gets(cpChoice, LEN) != NULL && cpChoice[0] != '\0')
+    {
+        for (color = red; color <= violet; color++)
+        {
+            if (strcmp(cpChoice, colors[color]) == 0)
+            {
+                color_is_found = true;
+                break;
+            }
+        }
+        if (color_is_found)
+        {
+            switch (color)
+            {
+            case red:
+                printf("reddddddddddddddddddddddd.\n");
+                break;
+            case blue:
+                printf("blueeeeeeeeeeeeeeeeeeeeee.\n");
+                break;
+            case yellow:
+                printf("yellowwwwwwwwwwwwwwwwwwww.\n");
+                break;
+            case green:
+                printf("greenneeeeennnnnnnnnnnnnn.\n");
+                break;
+            case violet:
+                printf("violetttttttttttttttttttt.\n");
+                break;
+
+            default:
+                break;
+            }
+            color_is_found = false;
+            printf("Next color : ");
+        }
+        else
+        {
+            printf("I don't know about the color %s.\n", cpChoice);
+            printf("Enter the another color :");
+        }
+    }
+    printf("Done!\n");
+}
+
+void code1412(void)
+{
+    TEST test1 = {1.1, 2.2};
+    printf("test1.x = %lf, test1.y = %lf\n", test1.x, test1.y);
+    COMPLEX complex1 = {1, 2};
+    printf("real : %f, imag : %f\n", complex1.real, complex1.imag);
+    typedef char *STRING;
+    STRING s = "hello";
+    printf("STRING s= %s.\n", s);
+}
+
+void code1413(void)
+{
+    int ipArr[3][6] = {
+        {1, 2, 3, 4, 5},
+        {10, 20, 30, 40, 50},
+        {100, 200, 300, 400, 500}};
+    // 二级指针之 type **
+    int **pp;
+    pp = ipArr;
+    int(*pArr)[6];
+    pArr = ipArr;
+    printf("ipArr : %p, pp : %p\n", ipArr, pp);
+    printf("ipArr[1] : %p, ++pp : %p\n", ipArr[1], ++pp);
+    for (size_t r = 0; r < 3; r++)
+    {
+        printf("Row : %d\n", r);
+        for (size_t c = 0; c < 6; c++)
+        {
+            printf("%d ", pArr[r][c]);
+            printf("%d ", *(pArr[r] + c));
+        }
+        printf("\n");
+    }
+
+    // for (size_t i = 0; i < 3; i++)
+    // {
+    //     printf("row %d : \n", i);
+    //     for (size_t j = 0; j < 6; j++)
+    //     {
+    //         printf("%d ", *(pp[i]++));
+    //     }
+    //     printf("\n");
+    // }
+    printf("sizeof(int*) = %zd\n", sizeof(int *));
+    printf("sizeof(int*) = %zd\n", sizeof(double *));
+    printf("sizeof(int*) = %zd\n", sizeof(int * [4]));
+}
+
+typedef char STRING[LEN];
+static struct Name
+{
+    char m_sFirstNm[LEN];
+    char m_sLastNm[LEN];
+};
+
+void toLower(struct Name *pName);
+void toUpper(struct Name *pName);
+void toTranpose(struct Name *pName);
+void toOrigal(const struct Name *pName);
+void show_name(void (*pf)(struct Name *), const struct Name *pName);
+void show_menu(void);
+char get_choice(void);
+void code1414(void)
+{
+    // typedef char STRING[LEN];
+    // struct Name
+    // {
+    //     STRING m_sFirstNm;
+    //     STRING m_sLastNm;
+    // };
+    enum e_Choice
+    {
+        eUpper,
+        eLower,
+        eTranspose,
+        eOrigial
+    };
+    struct Name *pName;
+    struct Name name;
+    pName = &name;
+    // =======================================================================
+    // 获取姓名
+    printf("Please enter your first name :");
+    while (s_gets(pName->m_sFirstNm, LEN) == NULL)
+    {
+        fprintf(stderr, "Your enter is error!\n");
+    }
+    printf("please enter your last name : ");
+    while (s_gets(pName->m_sLastNm, LEN) == NULL)
+    {
+        fprintf(stderr, "Your enter is error!\n");
+    }
+
+    // while (s_gets(name.m_sFirstNm, LEN) == NULL)
+    // {
+    //     fprintf(stderr, "Your enter is error!\n");
+    // }
+    // printf("please enter your last name : ");
+    // while (s_gets(name.m_sLastNm, LEN) == NULL)
+    // {
+    //     fprintf(stderr, "Your enter is error!\n");
+    // }
+
+    // =======================================================================
+    // 根据用户喜好打印。
+    char choice;
+    enum e_Choice eChoice;
+    void (*pf)(struct Name *);
+    show_menu();
+    choice = get_choice();
+    switch (choice)
+    {
+    case 'u':
+        eChoice = eUpper;
+        break;
+    case 'l':
+        eChoice = eLower;
+        break;
+    case 't':
+        eChoice = eTranspose;
+        break;
+    case 'o':
+        eChoice = eOrigial;
+        break;
+    default:
+        printf("Your choice is error.\n");
+        break;
+    }
+    if (eChoice == eUpper)
+        pf = toUpper;
+    else if (eChoice == eLower)
+        pf = toLower;
+    else if (eChoice == eTranspose)
+        pf = toTranpose;
+    else
+        pf = toOrigal;
+    show_name(pf, pName);
+    printf("Done!\n");
+}
+
 int main(int argc, char const *argv[])
 {
     //code144();
     //code146();
     //code147();
     //code1477();
-    code148();
+    //code148();
+    //code1411();
+    //code1412();
+    //code1413();
+    code1414();
     system("pause");
     return 0;
 }
@@ -432,7 +651,6 @@ int load_books(struct Book book[], FILE *fp)
     rewind(fp);
     while (iCount < MAXBOOK && fread(&book[iCount], iSize, 1, fp) == 1)
     {
-        printf("book : %p, &book[iCount] : %p.\n", book + iCount, &book[iCount]);
         book - iCount;
         if (iCount == 0)
         {
@@ -478,7 +696,6 @@ void write_books(const struct Book *book, const FILE *fp, int iStart, int iCount
     int ret;
     int iSize = sizeof(struct Book);
     ret = fwrite(book + iStart, iSize, iCount, fp);
-    printf("Ret = %d\n", ret);
 }
 
 void show_books(const struct Book *book, int iCount)
@@ -492,4 +709,96 @@ void show_books(const struct Book *book, int iCount)
             book++;
         }
     }
+}
+
+void show_menu(void)
+{
+    printf("u : Uppercase         l : Lowercase\n");
+    printf("t : Transpose         o : original\n");
+}
+
+char get_choice(void)
+{
+    char cChoice;
+    printf("Enter your choice(enter q to quit):");
+    cChoice = getchar();
+    if (cChoice == 'q')
+        exit(EXIT_SUCCESS);
+    while (getchar() != '\n')
+        continue;
+    return cChoice;
+}
+// 这里仅用于练习，不做代码评价
+void toLower(struct Name *pName)
+{
+    int iFirstNmLen = strlen(pName->m_sFirstNm);
+    int iLastNmLen = strlen(pName->m_sLastNm);
+    for (size_t i = 0; i < iFirstNmLen; i++)
+    {
+        pName->m_sFirstNm[i] = tolower(pName->m_sFirstNm[i]);
+    }
+    for (size_t i = 0; i < iLastNmLen; i++)
+    {
+        pName->m_sLastNm[i] = tolower(pName->m_sLastNm[i]);
+    }
+}
+void toUpper(struct Name *pName)
+{
+    // int iFirstNmLen = strlen(pName->m_sFirstNm);
+    // int iLastNmLen = strlen(pName->m_sLastNm);
+    // for (size_t i = 0; i < iFirstNmLen; i++)
+    // {
+    //     pName->m_sFirstNm[i] = toupper(pName->m_sFirstNm[i]);
+    // }
+    // for (size_t i = 0; i < iLastNmLen; i++)
+    // {
+    //     pName->m_sLastNm[i] = toupper(pName->m_sLastNm[i]);
+    // }
+    char *cp;
+    cp = pName->m_sFirstNm;
+    while(*cp++)
+        *cp = toupper(*cp);
+    cp = pName->m_sLastNm;
+    while(*cp++)
+        *cp = toupper(*cp);
+}
+void toTranpose(struct Name *pName)
+{
+    char *cp;
+    cp = pName->m_sFirstNm;
+    while (*cp)
+    {
+        if (islower(*cp))
+        {
+            *cp = toupper(*cp); 
+        }
+        else if (isupper(*cp))
+        {
+            *cp = tolower(*cp);
+        }
+        cp++;
+    }
+    cp = pName->m_sLastNm;
+    while (*cp)
+    {
+        if (islower(*cp))
+        {
+            *cp = toupper(*cp);
+        }
+        else if (isupper(*cp))
+        {
+            *cp = tolower(*cp);
+        }
+        cp++;
+    }
+}
+void toOrigal(const struct Name *pName)
+{
+    ;
+}
+void show_name(void (*pf)(struct Name *), const struct Name *pName)
+{
+    (*pf)(pName);
+    printf("first name : %s\n", pName->m_sFirstNm);
+    printf("last name : %s\n", pName->m_sLastNm);
 }
