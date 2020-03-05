@@ -1,5 +1,4 @@
 #include "17.list_copy.h"
-
 static void copy_to_node(Item, Node *pNode);
 
 void initialize_list(List *pList)
@@ -46,7 +45,7 @@ unsigned int list_item_count(const List *pList)
     return count;
 }
 
-bool add_item(Item item, List *pList)
+bool    add_item(Item item, List *pList)
 {
     Node *pNewNode;
     Node *pCurNode = *pList;
